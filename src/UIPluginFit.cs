@@ -3,6 +3,7 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,10 +29,13 @@ namespace UIFitter
         // If you need settings, define them like so:
         public static ConfigEntry<bool> ExampleConfig;
 
+        public static UIPluginFit Instance;
+
         // Awake is called when your plugin is created. Use this to set up your mod.
         internal void Awake()
         {
             Logging = this.Logger;
+            Instance = this;
             Logging.LogMessage($"Hello world from {NAME} {VERSION}!");
             // Harmony is for patching methods. If you're not patching anything, you can comment-out or delete this line.
             new Harmony(GUID).PatchAll();
@@ -41,11 +45,23 @@ namespace UIFitter
         {
             UIPluginFit.Logging.LogMessage($"UIPluginFit :" + message);
         }
+
+        public static void DelayDo(Action ToDo, float Delay = 2f)
+        {
+            UIPluginFit.Instance.StartCoroutine(DelayDoRoutine(ToDo, Delay));
+        }
+
+        public static IEnumerator DelayDoRoutine(Action ToDo, float Delay = 2f)
+        {
+            yield return new WaitForSeconds(Delay);
+            ToDo?.Invoke();
+            yield break;
+        }
     }
 
     // This is an example of a Harmony patch.
     // If you're not using this, you should delete it.
-    [HarmonyPatch(typeof(Character), nameof(Character.Awake))]
+    [HarmonyPatch(typeof(Character), nameof(Character.Start))]
     public class CharacterAwakePatch
     {
         public const float ShopMenuXOffset = 900;
@@ -54,28 +70,33 @@ namespace UIFitter
         [HarmonyPostfix]
         public static void Postfix(Character __instance)
         {
-            UIPluginFit.Log($"AWAKE CALLED FOR {__instance.Name}");
-
-            ///check this character is not an AI, they dont have a UI (well acutally they do its really messed up)
-            if (!__instance.IsAI)
+            UIPluginFit.DelayDo(() =>
             {
-                //only affect this character this patch is running on if it is the world host
-                if (__instance.IsWorldHost)
+
+                if (!__instance.IsAI && __instance.CharacterUI != null)
                 {
-                    RectTransform foundRectTransform = __instance.CharacterUI.transform.Find("GameplayPanels/Menus/ModalMenus/ShopMenu").GetComponent<RectTransform>();
+                    UIPluginFit.Log($"AWAKE CALLED FOR {__instance.Name}");
+                    string PathToShopUI = $"Canvas/GameplayPanels/Menus/ModalMenus/ShopMenu";
+                    UIPluginFit.Log($"{__instance.CharacterUI.transform} search root.");
+                    UIPluginFit.Log($"Finding Component at Path root/{PathToShopUI}");
+
+                    RectTransform foundRectTransform = __instance.CharacterUI.transform.Find(PathToShopUI).GetComponent<RectTransform>();
                     if (foundRectTransform != null)
                     {
-
                         UIPluginFit.Log($"Found RectTransform");
-                        foundRectTransform.offsetMax = new Vector2(900, 520);
+                        foundRectTransform.sizeDelta = new Vector2(900, 520);
                     }
                     else
                     {
                         UIPluginFit.Log($"Did not find RectTransform");
-                        //log error we did not find the component at path
                     }
                 }
-            }
+
+            }, 4f);
+
         }
     }
+
+
+
 }
