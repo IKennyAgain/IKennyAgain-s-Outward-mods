@@ -6,11 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Xml.Linq;
 using UnityEngine;
 
-// RENAME 'OutwardModTemplate' TO SOMETHING ELSE
-namespace UIFitter
+namespace IKennyUI
 {
     [BepInPlugin(GUID, NAME, VERSION)]
     public class UIPluginFit : BaseUnityPlugin
