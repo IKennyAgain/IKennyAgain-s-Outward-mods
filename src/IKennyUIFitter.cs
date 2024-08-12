@@ -145,6 +145,27 @@ namespace UIFitter
         }
     }
 
+    [HarmonyPatch(typeof(MenuManager), nameof(MenuManager.Start))]
+    public class MenuManagerStartPatch
+    {
+        [HarmonyPostfix]
+        public static void Postfix(MenuManager __instance)
+        {
+            IKennyUIFitter.DelayDo(() =>
+            {
+                RectTransform foundRectTransform = __instance.transform.Find("CharacterUIs/PlayerUI(Clone)/Canvas/GeneralPanels/MainScreen/VisualMainScreen/Options").GetComponent<RectTransform>();
+                if (foundRectTransform != null)
+                {
+                    foundRectTransform.offsetMax = new Vector2(180, 94);
+                }
+                else
+                {
+                    IKennyUIFitter.Log($"MenuManagerStartPatch : Did not find RectTransform");
+                }
 
+                }, 4f);
+
+        }
+    }
 
 }
