@@ -85,7 +85,7 @@ namespace UIFitter
                     //if this is a local player BUT not the 'main' player, do specific UI changes
                     if (__instance.IsLocalPlayer && !__instance.IsWorldHost)
                     {
-                        ModifyRectOffsetAtPath(__instance.CharacterUI, "/Canvas/GeneralPanels/MainScreen/VisualMainScreen/Options", default(Vector2), new Vector2(180, 94));
+                        ModifyRectOffsetAtPath(__instance.CharacterUI, "Canvas/GeneralPanels/MainScreen/VisualMainScreen/Options", default(Vector2), new Vector2(180, 94));
                     }
                     //otherwise if is a local player AND is the world host, continue as normal and make 
                     else if(__instance.IsLocalPlayer && __instance.IsWorldHost)
