@@ -80,12 +80,20 @@ namespace UIFitter
             {
                 if (!__instance.IsAI && __instance.CharacterUI != null)
                 {
-                    IKennyUIFitter.Log($"AWAKE CALLED FOR {__instance.Name}");                   
-                    ModifyRectSizeDeltaAtPath(__instance.CharacterUI, PathToShopUI, new Vector2(900, 520));
+                    IKennyUIFitter.Log($"{__instance.Name} IsLocalPlayer? {__instance.IsLocalPlayer} IsWorldHost? {__instance.IsWorldHost} ");
+                    //if this is a local player BUT not the 'main' player, do specific UI changes
+                    if (__instance.IsLocalPlayer && !__instance.IsWorldHost)
+                    {
+                        ModifyRectOffsetAtPath(__instance.CharacterUI, "/Canvas/GeneralPanels/MainScreen/VisualMainScreen/Options", default(Vector2), new Vector2(180, 94));
+                    }
+                    //otherwise if is a local player AND is the world host, continue as normal and make 
+                    else if(__instance.IsLocalPlayer && __instance.IsWorldHost)
+                    {
 
-
-                    ///change the offset min and offset max of the Shop Name Label (lbl)
-                    ModifyRectOffsetAtPath(__instance.CharacterUI, PathToShopNameLabel, new Vector2(0, 6), new Vector2(500, 34));
+                        ModifyRectSizeDeltaAtPath(__instance.CharacterUI, PathToShopUI, new Vector2(900, 520));
+                        ///change the offset min and offset max of the Shop Name Label (lbl)
+                        ModifyRectOffsetAtPath(__instance.CharacterUI, PathToShopNameLabel, new Vector2(0, 6), new Vector2(500, 34));
+                    } 
                 }
 
             }, 4f);
@@ -102,15 +110,22 @@ namespace UIFitter
             }
         }
 
-        public static void ModifyRectOffsetAtPath(CharacterUI CharacterUI, string RectTransformPath, Vector2 Min, Vector2 Max)
+        public static void ModifyRectOffsetAtPath(CharacterUI CharacterUI, string RectTransformPath, Vector2 Min = default(Vector2), Vector2 Max = default(Vector2))
         {
             IKennyUIFitter.Log($"{CharacterUI.transform} root.");
             IKennyUIFitter.Log($"Attempting to find {CharacterUI.transform}/{RectTransformPath}.");
             RectTransform foundRectTransform = GetRectTransformAtPath(CharacterUI, RectTransformPath);
             if (foundRectTransform != null)
             {
-                foundRectTransform.offsetMin = Min;
-                foundRectTransform.offsetMax = Max;
+                if (Min != default(Vector2))
+                {
+                    foundRectTransform.offsetMin = Min;
+                }
+
+                if (Max != default(Vector2))
+                {
+                    foundRectTransform.offsetMax = Max;
+                }                    
             }
         }
 
