@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using UnityEngine;
+using UnityEngine.TextCore;
 using static MapMagic.ObjectPool;
 
 // RENAME 'OutwardModTemplate' TO SOMETHING ELSE
@@ -145,15 +146,15 @@ namespace UIFitter
         }
     }
 
-    [HarmonyPatch(typeof(MenuManager), nameof(MenuManager.Start))]
-    public class MenuManagerStartPatch
+    [HarmonyPatch(typeof(SplitScreenManager), nameof(SplitScreenManager.AssignPlayerToUI))]
+    public class SplitScreenManagerStartPatch
     {
         [HarmonyPostfix]
-        public static void Postfix(MenuManager __instance)
+        public static void Postfix(SplitScreenManager __instance, Character _character)
         {
             IKennyUIFitter.DelayDo(() =>
             {
-                RectTransform foundRectTransform = __instance.transform.Find("CharacterUIs/PlayerUI(Clone)/Canvas/GeneralPanels/MainScreen/VisualMainScreen/Options").GetComponent<RectTransform>();
+                RectTransform foundRectTransform = _character.CharacterUI.transform.Find("GeneralPanels/MainScreen/VisualMainScreen/Options").GetComponent<RectTransform>();
                 if (foundRectTransform != null)
                 {
                     foundRectTransform.offsetMax = new Vector2(180, 94);
