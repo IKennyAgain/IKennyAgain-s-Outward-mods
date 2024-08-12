@@ -69,6 +69,9 @@ namespace UIFitter
 
         public const string PathToShopUI = "Canvas/GameplayPanels/Menus/ModalMenus/ShopMenu";
 
+        public const string PathToShopNameLabel = "Canvas/GameplayPanels/Menus/ModalMenus/ShopMenu/TopPanel/Shop PanelTop/lblShopName";
+
+        public const string PathToShopPlayerInvLabel = "Canvas/GameplayPanels/Menus/ModalMenus/ShopMenu/TopPanel/Shop PanelTop/lblPlayerInventory";
 
         [HarmonyPostfix]
         public static void Postfix(Character __instance)
@@ -79,6 +82,10 @@ namespace UIFitter
                 {
                     IKennyUIFitter.Log($"AWAKE CALLED FOR {__instance.Name}");                   
                     ModifyRectSizeDeltaAtPath(__instance.CharacterUI, PathToShopUI, new Vector2(900, 520));
+
+
+                    ///change the offset min and offset max of the Shop Name Label (lbl)
+                    ModifyRectOffsetAtPath(__instance.CharacterUI, PathToShopNameLabel, new Vector2(0, 6), new Vector2(500, 34));
                 }
 
             }, 4f);
