@@ -74,6 +74,20 @@ namespace UIFitter
 
         public const string PathToShopPlayerInvLabel = "Canvas/GameplayPanels/Menus/ModalMenus/ShopMenu/TopPanel/Shop PanelTop/lblPlayerInventory";
 
+        public const string PathToShopPlayerCurrency = "Canvas/GameplayPanels/Menus/ModalMenus/ShopMenu/TopPanel/Shop PanelTop/PlayerCurrency";
+
+        public const string PathToShopMerchantCurrency = "Canvas/GameplayPanels/Menus/ModalMenus/ShopMenu/TopPanel/Shop PanelTop/MerchantCurrency";
+
+        public const string PathToChestUI = "Canvas/GameplayPanels/Menus/ModalMenus/Stash - Panel";
+
+        public const string PathToChestLabel = "Canvas/GameplayPanels/Menus/ModalMenus/Stash - Panel/Content/TopPanel/Shop PanelTop/lblShopName";
+
+        public const string PathToChestPlayerLabel = "Canvas/GameplayPanels/Menus/ModalMenus/Stash - Panel/Content/TopPanel/Shop PanelTop/lblPlayerInventory";
+
+        public const string PathToPlayerStatus = "Canvas/GameplayPanels/HUD/StatusEffect - Panel";
+
+        public const string PathToPlayerInventory = "Canvas/GameplayPanels/Menus/CharacterMenus/MainPanel";
+
         [HarmonyPostfix]
         public static void Postfix(Character __instance)
         {
@@ -81,20 +95,46 @@ namespace UIFitter
             {
                 if (!__instance.IsAI && __instance.CharacterUI != null)
                 {
-                    IKennyUIFitter.Log($"{__instance.Name} IsLocalPlayer? {__instance.IsLocalPlayer} IsWorldHost? {__instance.IsWorldHost} ");
-                    //if this is a local player BUT not the 'main' player, do specific UI changes
-                    if (__instance.IsLocalPlayer && !__instance.IsWorldHost)
-                    {
-                        ModifyRectOffsetAtPath(__instance.CharacterUI, "Canvas/GeneralPanels/MainScreen/VisualMainScreen/Options", default(Vector2), new Vector2(180, 94));
-                    }
-                    //otherwise if is a local player AND is the world host, continue as normal and make 
-                    else if(__instance.IsLocalPlayer && __instance.IsWorldHost)
-                    {
+                    ModifyRectSizeDeltaAtPath(__instance.CharacterUI, PathToShopUI, new Vector2(900, 520));
+                    ///change the offset min and offset max of the Shop Name Label (lbl)
+                    ModifyRectOffsetAtPath(__instance.CharacterUI, PathToShopNameLabel, new Vector2(0, 6), new Vector2(500, 34));
+                    ///change the offset min and offset max of the Player Inv Name Label (lbl)
+                    ModifyRectOffsetAtPath(__instance.CharacterUI, PathToShopPlayerInvLabel, new Vector2(-500, 6), new Vector2(0, 34));
+                    ///change the offset min and offset max of the Player Currency Label (lbl)
+                    ModifyRectOffsetAtPath(__instance.CharacterUI, PathToShopPlayerCurrency, new Vector2(-500, -32), new Vector2(0, 18));
+                    ///change the offset min and offset max of the Merchant Currency Label (lbl)
+                    ModifyRectOffsetAtPath(__instance.CharacterUI, PathToShopMerchantCurrency, new Vector2(0, -32), new Vector2(500, 18));
+                    ///change the sizeDelta of the chest UI
+                    ModifyRectSizeDeltaAtPath(__instance.CharacterUI, PathToChestUI, new Vector2(945, 520));
+                    ///change the offset min and max of the chest UI
+                    ModifyRectOffsetAtPath(__instance.CharacterUI, PathToChestUI, default (Vector2), new Vector2(0, -20));
+                    ///change the offset min and max of the chest name
+                    ModifyRectOffsetAtPath(__instance.CharacterUI, PathToChestLabel, new Vector2(0, -10), new Vector2(500, 28));
+                    ///change the offset min and max of the player name
+                    ModifyRectOffsetAtPath(__instance.CharacterUI, PathToChestPlayerLabel, new Vector2(-500, -10), new Vector2(0, 28));
+                    ///change the sizeDelta of the Status UI
+                    ModifyRectSizeDeltaAtPath(__instance.CharacterUI, PathToPlayerStatus, new Vector2(140, 100));
+                    ///change the offset min and max of the Status UI
+                    ModifyRectOffsetAtPath(__instance.CharacterUI, PathToPlayerStatus, new Vector2(20, 300), new Vector2(160, 108));
+                    
 
-                        ModifyRectSizeDeltaAtPath(__instance.CharacterUI, PathToShopUI, new Vector2(900, 520));
-                        ///change the offset min and offset max of the Shop Name Label (lbl)
-                        ModifyRectOffsetAtPath(__instance.CharacterUI, PathToShopNameLabel, new Vector2(0, 6), new Vector2(500, 34));
-                    } 
+
+
+
+                    //IKennyUIFitter.Log($"{__instance.Name} IsLocalPlayer? {__instance.IsLocalPlayer} IsWorldHost? {__instance.IsWorldHost} ");
+                    //if this is a local player BUT not the 'main' player, do specific UI changes
+                    //if (__instance.IsLocalPlayer && !__instance.IsWorldHost)
+                    //{
+                    //ModifyRectOffsetAtPath(__instance.CharacterUI, "Canvas/GeneralPanels/MainScreen/VisualMainScreen/Options", default(Vector2), new Vector2(180, 94));
+                    //}
+                    //otherwise if is a local player AND is the world host, continue as normal and make 
+                    //else if(__instance.IsLocalPlayer && __instance.IsWorldHost)
+                    //{
+
+                    //ModifyRectSizeDeltaAtPath(__instance.CharacterUI, PathToShopUI, new Vector2(900, 520));
+                    ///change the offset min and offset max of the Shop Name Label (lbl)
+                    //ModifyRectOffsetAtPath(__instance.CharacterUI, PathToShopNameLabel, new Vector2(0, 6), new Vector2(500, 34));
+                    ///} 
                 }
 
             }, 4f);
